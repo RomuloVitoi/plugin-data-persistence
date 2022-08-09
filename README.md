@@ -7,15 +7,15 @@ Experimental stage, use at your own risk.
 You can install the disk persistence plugin using `npm`, `yarn`, `pnpm`:
 
 ```
-npm i @lyrajs/plugin-disk-persistence
+npm i @lyrasearch/plugin-disk-persistence
 ```
 
 ```
-yarn add @lyrajs/plugin-disk-persistence
+yarn add @lyrasearch/plugin-disk-persistence
 ```
 
 ```
-pnpm add @lyrajs/plugin-disk-persistence
+pnpm add @lyrasearch/plugin-disk-persistence
 ```
 
 # Usage
