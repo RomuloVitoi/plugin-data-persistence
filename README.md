@@ -48,7 +48,7 @@ insert(myPrimaryDB, {
 you can save the database to disk:
 
 ```js
-import { persist } from '@lyrajs/plugin-disk-persistence'
+import { persist } from '@lyrasearch/plugin-disk-persistence'
 
 persist(myPrimaryDB, 'binary')
 ```
@@ -62,7 +62,7 @@ At this point, you can also restore the database from disk:
 
 ```js
 import { search } from '@nearform/lyra'
-import { restore } from '@lyrajs/plugin-disk-persistence'
+import { restore } from '@lyrasearch/plugin-disk-persistence'
 
 const mySecondaryDB = restore('binary')
 

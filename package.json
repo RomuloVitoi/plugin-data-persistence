@@ -1,5 +1,5 @@
 {
-  "name": "@lyrajs/plugin-disk-persistence",
+  "name": "@lyrasearch/plugin-disk-persistence",
   "version": "0.0.1-alpha.0",
   "description": "Disk persistence plugin for Lyra",
   "main": "./dist/node/cjs/node-bun/index.js",
