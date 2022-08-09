@@ -105,3 +105,75 @@ t.test('binary persistence', async t => {
     rmSync(path)
   })
 })
+
+t.test('json persistence', async t => {
+  t.plan(2)
+
+  t.test('should generate a persistence file on the disk with random name and json format', async t => {
+    t.plan(2)
+
+    const db = generateTestDBInstance()
+    const q1 = search(db, {
+      term: 'way'
+    })
+
+    const q2 = search(db, {
+      term: 'i'
+    })
+
+    // Persist database on disk in json format
+    const path = await persist(db, 'json')
+
+    // Load database from disk in json format
+    const db2 = restore('json')
+
+    const qp1 = search(db2, {
+      term: 'way'
+    })
+
+    const qp2 = search(db2, {
+      term: 'i'
+    })
+
+    // Queries on the loaded database should match the original database
+    t.same(q1.hits, qp1.hits)
+    t.same(q2.hits, qp2.hits)
+
+    // Clean up
+    rmSync(path)
+  })
+
+  t.test('should generate a persistence file on the disk with a given name and json format', async t => {
+    t.plan(2)
+
+    const db = generateTestDBInstance()
+    const q1 = search(db, {
+      term: 'way'
+    })
+
+    const q2 = search(db, {
+      term: 'i'
+    })
+
+    // Persist database on disk in json format
+    const path = await persist(db, 'json', 'test.json')
+
+    // Load database from disk in json format
+    const db2 = restore('json', 'test.json')
+
+    const qp1 = search(db2, {
+      term: 'way'
+    })
+
+    const qp2 = search(db2, {
+      term: 'i'
+    })
+
+    // Queries on the loaded database should match the original database
+    t.same(q1.hits, qp1.hits)
+    t.same(q2.hits, qp2.hits)
+
+    // Clean up
+    rmSync(path)
+  })
+})
