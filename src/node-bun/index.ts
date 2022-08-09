@@ -22,7 +22,8 @@ function getDefaultOutputDir(format: PersistenceFormat): string {
       break
   }
 
-  const fileName = `${DEFAULT_DB_NAME}.${extension}`
+  const dbName = process.env.LYRA_DB_NAME || DEFAULT_DB_NAME
+  const fileName = `${dbName}.${extension}`
 
   return join(process.cwd(), fileName)
 }
