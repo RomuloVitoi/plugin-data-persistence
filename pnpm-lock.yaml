@@ -7,6 +7,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.32.0
   c8: ^7.12.0
   dpack: ^0.6.22
+  rimraf: ^3.0.2
   tap: ^16.3.0
   ts-node: ^10.9.1
   ts-standard: ^11.0.0
@@ -21,6 +22,7 @@ devDependencies:
   '@types/tap': 15.0.7
   '@typescript-eslint/eslint-plugin': 5.32.0_typescript@4.7.4
   c8: 7.12.0
+  rimraf: 3.0.2
   tap: 16.3.0_6oasmw356qmm23djlsjgkwvrtm
   ts-node: 10.9.1_hn66opzbaneygq52jmwjxha6su
   ts-standard: 11.0.0_typescript@4.7.4
