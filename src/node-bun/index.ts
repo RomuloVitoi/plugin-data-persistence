@@ -2,14 +2,15 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 // @ts-expect-error
 import { serialize, parse } from 'dpack'
-import { save, load as loadLyra, Lyra, PropertiesSchema, create, insert, search } from '@nearform/lyra'
+import { save, Lyra, PropertiesSchema } from '@nearform/lyra'
 import { DEFAULT_DB_NAME } from '../common/utils'
+import { UNSUPPORTED_FORMAT } from '../common/errors'
 
 export type PersistenceFormat =
   | 'json'
   | 'binary'
 
-function getDefaultOutputDir(format: PersistenceFormat): string {
+function getDefaultOutputDir (format: PersistenceFormat): string {
   let extension: string
 
   switch (format) {
@@ -26,7 +27,7 @@ function getDefaultOutputDir(format: PersistenceFormat): string {
   return join(process.cwd(), fileName)
 }
 
-export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
+export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
   const dbExport = save(db)
   let serialized: string
 
@@ -38,7 +39,7 @@ export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: Persist
       serialized = serialize(dbExport)
       break
     default:
-      throw new Error(`Unsupported serialization format: ${format}`)
+      throw new Error(UNSUPPORTED_FORMAT(format))
   }
 
   writeFileSync(path, serialized)
@@ -46,25 +47,25 @@ export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: Persist
   return path
 }
 
-export function load<T extends PropertiesSchema>(db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
+export function load<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
   const data = readFileSync(path)
-  let deserialized: any;
+  let deserialized: any
 
   switch (format) {
     case 'json':
       deserialized = JSON.parse(data.toString())
-      break;
+      break
     case 'binary':
-      deserialized = parse(data);
-      break;
+      deserialized = parse(data)
+      break
     default:
-      throw new Error(`Unsupported serialization format: ${format}`);
+      throw new Error(UNSUPPORTED_FORMAT(format))
   }
 
   // loadLyra(db, deserialized)
-  db.index = deserialized.index;
-  db.docs = deserialized.docs;
-  db.nodes = deserialized.nodes;
-  db.schema = deserialized.schema;
+  db.index = deserialized.index
+  db.docs = deserialized.docs
+  db.nodes = deserialized.nodes
+  db.schema = deserialized.schema
   return db
 }
