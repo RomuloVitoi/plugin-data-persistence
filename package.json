@@ -5,6 +5,9 @@
   "main": "./dist/node/cjs/node-bun/index.js",
   "module": "./dist/node/esm/node-bun/index.js",
   "types": "./dist/node/esm/node-bun/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "changelog": "auto-changelog -p",
     "lint": "ts-standard --fix",
