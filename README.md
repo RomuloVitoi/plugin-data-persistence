@@ -48,9 +48,9 @@ insert(myPrimaryDB, {
 you can save the database to disk:
 
 ```js
-import { save } from '@lyrajs/plugin-disk-persistence'
+import { persist } from '@lyrajs/plugin-disk-persistence'
 
-save(myPrimaryDB, 'binary')
+persist(myPrimaryDB, 'binary')
 ```
 
 Available formats are:

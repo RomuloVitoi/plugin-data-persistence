@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 // @ts-expect-error
 import { serialize, parse } from 'dpack'
-import { save, Lyra, PropertiesSchema } from '@nearform/lyra'
+import { create, save, Lyra, PropertiesSchema } from '@nearform/lyra'
 import { DEFAULT_DB_NAME } from '../common/utils'
 import { UNSUPPORTED_FORMAT } from '../common/errors'
 
@@ -10,7 +10,7 @@ export type PersistenceFormat =
   | 'json'
   | 'binary'
 
-function getDefaultOutputDir (format: PersistenceFormat): string {
+function getDefaultOutputDir(format: PersistenceFormat): string {
   let extension: string
 
   switch (format) {
@@ -27,7 +27,7 @@ function getDefaultOutputDir (format: PersistenceFormat): string {
   return join(process.cwd(), fileName)
 }
 
-export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
+export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
   const dbExport = save(db)
   let serialized: string
 
@@ -47,7 +47,12 @@ export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: Persis
   return path
 }
 
-export function load<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
+export function restore<T extends PropertiesSchema>(format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
+  const db = create({
+    schema: {
+      __placeholder: 'string'
+    }
+  });
   const data = readFileSync(path)
   let deserialized: any
 
@@ -62,10 +67,9 @@ export function load<T extends PropertiesSchema> (db: Lyra<T>, format: Persisten
       throw new Error(UNSUPPORTED_FORMAT(format))
   }
 
-  // loadLyra(db, deserialized)
   db.index = deserialized.index
   db.docs = deserialized.docs
   db.nodes = deserialized.nodes
   db.schema = deserialized.schema
-  return db
+  return db as unknown as Lyra<T>
 }
