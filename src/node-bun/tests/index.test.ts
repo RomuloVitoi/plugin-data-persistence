@@ -1,4 +1,5 @@
 import { rmSync } from 'node:fs'
+import { resolve } from 'node:path'
 import t from 'tap'
 import { create, insert, Lyra, search } from '@nearform/lyra'
 import { restore, persist } from '../../node-bun'
@@ -35,7 +36,7 @@ function generateTestDBInstance(): Lyra<any> {
 }
 
 t.test('binary persistence', async t => {
-  t.plan(2)
+  t.plan(3)
 
   t.test('should generate a persistence file on the disk with random name', async t => {
     t.plan(2)
@@ -50,7 +51,7 @@ t.test('binary persistence', async t => {
     })
 
     // Persist database on disk in binary format
-    const path = await persist(db, 'binary')
+    const path = persist(db, 'binary')
 
     // Load database from disk in binary format
     const db2 = restore('binary')
@@ -84,7 +85,7 @@ t.test('binary persistence', async t => {
     })
 
     // Persist database on disk in binary format
-    const path = await persist(db, 'binary', 'test.dpack')
+    const path = persist(db, 'binary', 'test.dpack')
 
     // Load database from disk in binary format
     const db2 = restore('binary', 'test.dpack')
@@ -104,6 +105,44 @@ t.test('binary persistence', async t => {
     // Clean up
     rmSync(path)
   })
+
+  t.test('should generate a persistence file on the disk using LYRA_DB_NAME env', async t => {
+    t.plan(3)
+    const currentLyraDBNameValue = process.env.LYRA_DB_NAME
+    process.env.LYRA_DB_NAME = 'example_db_dump'
+
+    const db = generateTestDBInstance()
+    const q1 = search(db, {
+      term: 'way'
+    })
+
+    const q2 = search(db, {
+      term: 'i'
+    })
+
+    // Persist database on disk in binary format
+    const path = persist(db, 'binary')
+    t.match(path, process.env.LYRA_DB_NAME)
+
+    // Load database from disk in binary format
+    const db2 = restore('binary', path)
+
+    const qp1 = search(db2, {
+      term: 'way'
+    })
+
+    const qp2 = search(db2, {
+      term: 'i'
+    })
+
+    // Queries on the loaded database should match the original database
+    t.same(q1.hits, qp1.hits)
+    t.same(q2.hits, qp2.hits)
+
+    // Clean up
+    rmSync(path)
+    process.env.LYRA_DB_NAME = currentLyraDBNameValue
+  })
 })
 
 t.test('json persistence', async t => {
@@ -122,7 +161,7 @@ t.test('json persistence', async t => {
     })
 
     // Persist database on disk in json format
-    const path = await persist(db, 'json')
+    const path = persist(db, 'json')
 
     // Load database from disk in json format
     const db2 = restore('json')
