@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'node:path'
+import { join } from 'path'
 // @ts-expect-error dpack does not expose types
 import { serialize, parse } from 'dpack'
 import { encode, decode } from '@msgpack/msgpack'
