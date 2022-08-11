@@ -58,6 +58,11 @@ Available formats are:
 - `binary`: saves the database to a compressed, binary file using `dpack` algorithm (**recommended**)
 - `json`: saves the database to a JSON file
 
+The `persist` function accepts as a third argument the file name.
+When no argument, a default name will be used: `lyra_bump_623432432`.
+
+Note: you can use the environment variable `LYRA_DB_NAME` to override the default name.
+
 At this point, you can also restore the database from disk:
 
 ```js
