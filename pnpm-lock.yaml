@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@msgpack/msgpack': ^2.7.2
   '@nearform/lyra': ^0.0.4
   '@types/node': ^18.6.4
   '@types/tap': ^15.0.7
@@ -15,6 +16,7 @@ specifiers:
   typescript: ^4.7.4
 
 dependencies:
+  '@msgpack/msgpack': 2.7.2
   '@nearform/lyra': 0.0.4
   dpack: 0.6.22
 
@@ -342,6 +344,11 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@msgpack/msgpack/2.7.2:
+    resolution: {integrity: sha512-rYEi46+gIzufyYUAoHDnRzkWGxajpD9vVXFQ3g1vbjrBm6P7MBmm+s/fqPa46sxa+8FOUdEuRQKaugo5a4JWpw==}
+    engines: {node: '>= 10'}
+    dev: false
 
   /@nearform/lyra/0.0.4:
     resolution: {integrity: sha512-X1Z553Ku+6nBkwW3zZ6aPAFLu6MmOkysUE7WpPAJYuEE5zgDLh2pGLy4NVPeTaIg3iBJvhLX4atz/lrJwEj4rQ==}

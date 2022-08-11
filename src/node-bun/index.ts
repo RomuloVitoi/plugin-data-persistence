@@ -1,13 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-// @ts-expect-error
+// @ts-expect-error dpack does not expose types
 import { serialize, parse } from 'dpack'
+import { encode, decode } from '@msgpack/msgpack'
 import { create, save, Lyra, PropertiesSchema } from '@nearform/lyra'
 import { DEFAULT_DB_NAME } from '../common/utils'
 import { UNSUPPORTED_FORMAT } from '../common/errors'
 
 export type PersistenceFormat =
   | 'json'
+  | 'dpack'
   | 'binary'
 
 function getDefaultOutputDir(format: PersistenceFormat): string {
@@ -17,9 +19,11 @@ function getDefaultOutputDir(format: PersistenceFormat): string {
     case 'json':
       extension = 'json'
       break
-    case 'binary':
+    case 'dpack':
       extension = 'dpack'
       break
+    case 'binary':
+      extension = 'msp'
   }
 
   const fileName = `${DEFAULT_DB_NAME}.${extension}`
@@ -29,14 +33,18 @@ function getDefaultOutputDir(format: PersistenceFormat): string {
 
 export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
   const dbExport = save(db)
-  let serialized: string
+  let serialized: string | Buffer
 
   switch (format) {
     case 'json':
       serialized = JSON.stringify(dbExport)
       break
-    case 'binary':
+    case 'dpack':
       serialized = serialize(dbExport)
+      break
+    case 'binary':
+      const msgpack = encode(dbExport)
+      serialized = Buffer.from(msgpack.buffer, msgpack.byteOffset, msgpack.byteLength)
       break
     default:
       throw new Error(UNSUPPORTED_FORMAT(format))
@@ -60,8 +68,11 @@ export function restore<T extends PropertiesSchema>(format: PersistenceFormat = 
     case 'json':
       deserialized = JSON.parse(data.toString())
       break
-    case 'binary':
+    case 'dpack':
       deserialized = parse(data)
+      break
+    case 'binary':
+      deserialized = decode(data.buffer)
       break
     default:
       throw new Error(UNSUPPORTED_FORMAT(format))

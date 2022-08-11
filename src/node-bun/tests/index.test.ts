@@ -177,3 +177,75 @@ t.test('json persistence', async t => {
     rmSync(path)
   })
 })
+
+t.test('dpack persistence', async t => {
+  t.plan(2)
+
+  t.test('should generate a persistence file on the disk with random name and dpack format', async t => {
+    t.plan(2)
+
+    const db = generateTestDBInstance()
+    const q1 = search(db, {
+      term: 'way'
+    })
+
+    const q2 = search(db, {
+      term: 'i'
+    })
+
+    // Persist database on disk in dpack format
+    const path = await persist(db, 'dpack')
+
+    // Load database from disk in dpack format
+    const db2 = restore('dpack')
+
+    const qp1 = search(db2, {
+      term: 'way'
+    })
+
+    const qp2 = search(db2, {
+      term: 'i'
+    })
+
+    // Queries on the loaded database should match the original database
+    t.same(q1.hits, qp1.hits)
+    t.same(q2.hits, qp2.hits)
+
+    // Clean up
+    rmSync(path)
+  })
+
+  t.test('should generate a persistence file on the disk with a given name and dpack format', async t => {
+    t.plan(2)
+
+    const db = generateTestDBInstance()
+    const q1 = search(db, {
+      term: 'way'
+    })
+
+    const q2 = search(db, {
+      term: 'i'
+    })
+
+    // Persist database on disk in json format
+    const path = await persist(db, 'dpack', 'test.dpack')
+
+    // Load database from disk in json format
+    const db2 = restore('dpack', 'test.dpack')
+
+    const qp1 = search(db2, {
+      term: 'way'
+    })
+
+    const qp2 = search(db2, {
+      term: 'i'
+    })
+
+    // Queries on the loaded database should match the original database
+    t.same(q1.hits, qp1.hits)
+    t.same(q2.hits, qp2.hits)
+
+    // Clean up
+    rmSync(path)
+  })
+})
