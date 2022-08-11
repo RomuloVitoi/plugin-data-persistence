@@ -1,5 +1,7 @@
 # Disk Persistence Plugin
 
+[![Tests](https://github.com/LyraSearch/plugin-disk-persistence/actions/workflows/tests.yml/badge.svg)](https://github.com/LyraSearch/plugin-disk-persistence/actions/workflows/tests.yml)
+
 Experimental stage, use at your own risk.
 
 # Installation
