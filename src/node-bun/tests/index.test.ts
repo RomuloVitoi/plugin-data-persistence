@@ -35,10 +35,10 @@ function generateTestDBInstance(): Lyra<any> {
   return db
 }
 
-t.test('binary persistence', async t => {
+t.test('binary persistence', t => {
   t.plan(3)
 
-  t.test('should generate a persistence file on the disk with random name', async t => {
+  t.test('should generate a persistence file on the disk with random name', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -72,7 +72,7 @@ t.test('binary persistence', async t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name', async t => {
+  t.test('should generate a persistence file on the disk with a given name', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -106,7 +106,7 @@ t.test('binary persistence', async t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk using LYRA_DB_NAME env', async t => {
+  t.test('should generate a persistence file on the disk using LYRA_DB_NAME env', t => {
     t.plan(3)
     const currentLyraDBNameValue = process.env.LYRA_DB_NAME
     process.env.LYRA_DB_NAME = 'example_db_dump'
@@ -145,10 +145,10 @@ t.test('binary persistence', async t => {
   })
 })
 
-t.test('json persistence', async t => {
+t.test('json persistence', t => {
   t.plan(2)
 
-  t.test('should generate a persistence file on the disk with random name and json format', async t => {
+  t.test('should generate a persistence file on the disk with random name and json format', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -182,7 +182,7 @@ t.test('json persistence', async t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name and json format', async t => {
+  t.test('should generate a persistence file on the disk with a given name and json format', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -195,7 +195,7 @@ t.test('json persistence', async t => {
     })
 
     // Persist database on disk in json format
-    const path = await persist(db, 'json', 'test.json')
+    const path = persist(db, 'json', 'test.json')
 
     // Load database from disk in json format
     const db2 = restore('json', 'test.json')
@@ -217,10 +217,10 @@ t.test('json persistence', async t => {
   })
 })
 
-t.test('dpack persistence', async t => {
+t.test('dpack persistence', t => {
   t.plan(2)
 
-  t.test('should generate a persistence file on the disk with random name and dpack format', async t => {
+  t.test('should generate a persistence file on the disk with random name and dpack format', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -233,7 +233,7 @@ t.test('dpack persistence', async t => {
     })
 
     // Persist database on disk in dpack format
-    const path = await persist(db, 'dpack')
+    const path = persist(db, 'dpack')
 
     // Load database from disk in dpack format
     const db2 = restore('dpack')
@@ -254,7 +254,7 @@ t.test('dpack persistence', async t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name and dpack format', async t => {
+  t.test('should generate a persistence file on the disk with a given name and dpack format', t => {
     t.plan(2)
 
     const db = generateTestDBInstance()
@@ -267,7 +267,7 @@ t.test('dpack persistence', async t => {
     })
 
     // Persist database on disk in json format
-    const path = await persist(db, 'dpack', 'test.dpack')
+    const path = persist(db, 'dpack', 'test.dpack')
 
     // Load database from disk in json format
     const db2 = restore('dpack', 'test.dpack')
@@ -286,5 +286,21 @@ t.test('dpack persistence', async t => {
 
     // Clean up
     rmSync(path)
+  })
+})
+
+t.test('errors', t => {
+  t.plan(1)
+
+  t.test('should throw an error when trying to persist a database in an unsupported format', t => {
+    t.plan(1)
+
+    const db = generateTestDBInstance()
+    try {
+      // @ts-expect-error - 'unsupported' is not a supported format
+      persist(db, 'unsupported')
+    } catch ({ message }) {
+      t.match(message, 'Unsupported serialization format: unsupported')
+    }
   })
 })
