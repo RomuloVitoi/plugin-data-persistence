@@ -5,6 +5,6 @@ export type AvailableRuntimes =
   | 'browsers'
 
 export type PersistenceFormat =
-| 'json'
-| 'dpack'
-| 'binary'
+  | 'json'
+  | 'dpack'
+  | 'binary'

@@ -30,7 +30,7 @@ export function getDefaultFileName (format: PersistenceFormat, runtime: Availabl
   return `${dbName}.${extension}`
 }
 
-export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary'): string | Buffer {
+export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', isBrowser = false): string | Buffer {
   const dbExport = save(db)
   let serialized: string | Buffer
 
@@ -44,6 +44,9 @@ export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: Persis
     case 'binary':
       const msgpack = encode(dbExport)
       serialized = Buffer.from(msgpack.buffer, msgpack.byteOffset, msgpack.byteLength)
+      if (isBrowser) {
+        serialized = serialized.toString('hex')
+      }
       break
     default:
       throw new Error(UNSUPPORTED_FORMAT(format))
@@ -52,7 +55,7 @@ export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: Persis
   return serialized
 }
 
-export function restore<T extends PropertiesSchema> (format: PersistenceFormat = 'binary', data: string | Buffer): Lyra<T> {
+export function restore<T extends PropertiesSchema> (format: PersistenceFormat = 'binary', data: string | Buffer, isBrowser = false): Lyra<T> {
   const db = create({
     schema: {
       __placeholder: 'string'
@@ -68,6 +71,9 @@ export function restore<T extends PropertiesSchema> (format: PersistenceFormat =
       deserialized = parse(data)
       break
     case 'binary':
+      if (isBrowser) {
+        data = Buffer.from(data.toString(), 'hex')
+      }
       deserialized = decode((data as Buffer).buffer)
       break
     default:

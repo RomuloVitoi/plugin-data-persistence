@@ -11,7 +11,7 @@
   "scripts": {
     "changelog": "auto-changelog -p",
     "lint": "ts-standard --fix",
-    "test": "c8 -c src/node-bun/tests/config/c8.json tap --rcfile=src/node-bun/tests/config/tap.yml src/**/tests/*.test.ts",
+    "test": "c8 -c src/browser/tests/config/c8.json tap --rcfile=src/browser/tests/config/tap.yml src/**/tests/*.test.ts",
     "build:node:cjs": "tsc --project tsconfig.node.cjs.json",
     "build:node:module": "tsc --project tsconfig.node.esm.json",
     "build": "rimraf ./dist && pnpm build:node:module && pnpm build:node:cjs"
