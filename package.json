@@ -14,7 +14,8 @@
     "test": "c8 -c src/browser/tests/config/c8.json tap --rcfile=src/browser/tests/config/tap.yml src/**/tests/*.test.ts",
     "build:node:cjs": "tsc --project tsconfig.node.cjs.json",
     "build:node:module": "tsc --project tsconfig.node.esm.json",
-    "build": "rimraf ./dist && pnpm build:node:module && pnpm build:node:cjs"
+    "build:browser": "esbuild src/browser/index.ts --bundle --outfile=dist/browser/index.js --minify --sourcemap --external:./node_modules/*",
+    "build": "rimraf ./dist && pnpm build:node:module && pnpm build:node:cjs && pnpm build:browser"
   },
   "keywords": [
     "lyra",
@@ -38,6 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "auto-changelog": "^2.4.0",
     "c8": "^7.12.0",
+    "esbuild": "^0.15.5",
     "rimraf": "^3.0.2",
     "tap": "^16.3.0",
     "ts-node": "^10.9.1",

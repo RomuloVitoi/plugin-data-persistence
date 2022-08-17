@@ -2,7 +2,7 @@ import type { PropertiesSchema, Lyra } from '@nearform/lyra'
 import type { PersistenceFormat, AvailableRuntimes } from './types'
 import { save, create } from '@nearform/lyra'
 // @ts-expect-error dpack does not expose types
-import { serialize, parse } from 'dpack'
+import * as dpack from 'dpack'
 import { encode, decode } from '@msgpack/msgpack'
 import { DPACK_NOT_SUPPORTED_ON_DENO, UNSUPPORTED_FORMAT } from './errors'
 
@@ -39,7 +39,7 @@ export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: Persis
       serialized = JSON.stringify(dbExport)
       break
     case 'dpack':
-      serialized = serialize(dbExport)
+      serialized = dpack.serialize(dbExport)
       break
     case 'binary':
       const msgpack = encode(dbExport)
@@ -68,7 +68,7 @@ export function restore<T extends PropertiesSchema> (format: PersistenceFormat =
       deserialized = JSON.parse(data.toString())
       break
     case 'dpack':
-      deserialized = parse(data)
+      deserialized = dpack.parse(data)
       break
     case 'binary':
       if (isBrowser) {
