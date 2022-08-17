@@ -1,38 +1,18 @@
+import type { PersistenceFormat, AvailableRuntimes } from '../common/types'
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 // @ts-expect-error dpack does not expose types
 import { serialize, parse } from 'dpack'
 import { encode, decode } from '@msgpack/msgpack'
 import { create, save, Lyra, PropertiesSchema } from '@nearform/lyra'
-import { DEFAULT_DB_NAME } from '../common/utils'
 import { UNSUPPORTED_FORMAT } from '../common/errors'
+import { getDefaultFileName } from '../common/utils'
 
-export type PersistenceFormat =
-  | 'json'
-  | 'dpack'
-  | 'binary'
-
-function getDefaultOutputDir(format: PersistenceFormat): string {
-  let extension: string
-
-  switch (format) {
-    case 'json':
-      extension = 'json'
-      break
-    case 'dpack':
-      extension = 'dpack'
-      break
-    case 'binary':
-      extension = 'msp'
-  }
-
-  const dbName = process.env.LYRA_DB_NAME || DEFAULT_DB_NAME
-  const fileName = `${dbName}.${extension}`
-
-  return join(process.cwd(), fileName)
+function getDefaultOutputDir (format: PersistenceFormat): string {
+  return join(process.cwd(), getDefaultFileName(format, 'node'))
 }
 
-export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
+export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): string {
   const dbExport = save(db)
   let serialized: string | Buffer
 
@@ -56,12 +36,12 @@ export function persist<T extends PropertiesSchema>(db: Lyra<T>, format: Persist
   return path
 }
 
-export function restore<T extends PropertiesSchema>(format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
+export function restore<T extends PropertiesSchema> (format: PersistenceFormat = 'binary', path: string = getDefaultOutputDir(format)): Lyra<T> {
   const db = create({
     schema: {
       __placeholder: 'string'
     }
-  });
+  })
   const data = readFileSync(path)
   let deserialized: any
 

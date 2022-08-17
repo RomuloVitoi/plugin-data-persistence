@@ -1,10 +1,9 @@
-import { rmSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { rmSync } from 'fs'
 import t from 'tap'
 import { create, insert, Lyra, search } from '@nearform/lyra'
 import { restore, persist } from '../../node-bun'
 
-function generateTestDBInstance(): Lyra<any> {
+function generateTestDBInstance (): Lyra<any> {
   const db = create({
     schema: {
       quote: 'string',
