@@ -41,6 +41,8 @@ pnpm add @lyrasearch/plugin-disk-persistence
 
 # Usage
 
+## Disk persistence
+
 You can save and restore a database by using the methods exposed by the
 `plugin-data-persistence` package. <br />
 
@@ -100,6 +102,39 @@ const mySecondaryDB = restore("binary");
 search(mySecondaryDB, {
   term: "work",
 });
+```
+
+## In-memory persistence
+
+You can save and restore a database by using the methods exposed by the
+`plugin-data-persistence/browser` package. <br />
+
+```js
+import { create, insert } from "@nearform/lyra";
+
+const myPrimaryDB = create({
+  schema: {
+    quote: "string",
+    author: "string",
+  },
+});
+
+insert(myPrimaryDB, {
+  quote: "Impossible is for the unwilling",
+  author: "John Keats",
+});
+
+insert(myPrimaryDB, {
+  quote: "I have not failed. I’ve just found 10,000 ways that won’t work.",
+  author: "Thomas A. Edison",
+});
+```
+
+```js
+import { persist, restore } from "@lyrasearch/plugin-data-persistence/browser";
+
+const data = persist(myPrimaryDB, "binary");
+const newDB = restore(data, "binary");
 ```
 
 # License
