@@ -15,7 +15,7 @@ This plugin aims to provide data persistence capabilities to Lyra.
 
 # Usage
 
-For the complete usage guide, please refer to the [official plugin documentation](https://docs.lyrajs.io/docs/plugins/plugin-data-persistence).
+For the complete usage guide, please refer to the [official plugin documentation](https://docs.lyrajs.io/plugins/plugin-data-persistence).
 
 # License
 
