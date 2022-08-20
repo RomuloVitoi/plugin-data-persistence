@@ -1,7 +1,7 @@
 import { rmSync } from 'fs'
 import t from 'tap'
 import { create, insert, Lyra, search } from '@nearform/lyra'
-import { restore, persist } from '../../node-bun'
+import { restoreFromFile, persistToFile, importInstance, exportInstance } from '../../node-bun'
 import { UNSUPPORTED_FORMAT } from '../../common/errors'
 
 function generateTestDBInstance (): Lyra<any> {
@@ -51,10 +51,10 @@ t.test('binary persistence', t => {
     })
 
     // Persist database on disk in binary format
-    const path = persist(db, 'binary')
+    const path = persistToFile(db, 'binary')
 
     // Load database from disk in binary format
-    const db2 = restore('binary')
+    const db2 = restoreFromFile('binary')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -85,10 +85,10 @@ t.test('binary persistence', t => {
     })
 
     // Persist database on disk in binary format
-    const path = persist(db, 'binary', 'test.dpack')
+    const path = persistToFile(db, 'binary', 'test.dpack')
 
     // Load database from disk in binary format
-    const db2 = restore('binary', 'test.dpack')
+    const db2 = restoreFromFile('binary', 'test.dpack')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -121,11 +121,11 @@ t.test('binary persistence', t => {
     })
 
     // Persist database on disk in binary format
-    const path = persist(db, 'binary')
+    const path = persistToFile(db, 'binary')
     t.match(path, process.env.LYRA_DB_NAME)
 
     // Load database from disk in binary format
-    const db2 = restore('binary', path)
+    const db2 = restoreFromFile('binary', path)
 
     const qp1 = search(db2, {
       term: 'way'
@@ -161,10 +161,10 @@ t.test('json persistence', t => {
     })
 
     // Persist database on disk in json format
-    const path = persist(db, 'json')
+    const path = persistToFile(db, 'json')
 
     // Load database from disk in json format
-    const db2 = restore('json')
+    const db2 = restoreFromFile('json')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -195,10 +195,10 @@ t.test('json persistence', t => {
     })
 
     // Persist database on disk in json format
-    const path = persist(db, 'json', 'test.json')
+    const path = persistToFile(db, 'json', 'test.json')
 
     // Load database from disk in json format
-    const db2 = restore('json', 'test.json')
+    const db2 = restoreFromFile('json', 'test.json')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -233,10 +233,10 @@ t.test('dpack persistence', t => {
     })
 
     // Persist database on disk in dpack format
-    const path = persist(db, 'dpack')
+    const path = persistToFile(db, 'dpack')
 
     // Load database from disk in dpack format
-    const db2 = restore('dpack')
+    const db2 = restoreFromFile('dpack')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -267,10 +267,10 @@ t.test('dpack persistence', t => {
     })
 
     // Persist database on disk in json format
-    const path = persist(db, 'dpack', 'test.dpack')
+    const path = persistToFile(db, 'dpack', 'test.dpack')
 
     // Load database from disk in json format
-    const db2 = restore('dpack', 'test.dpack')
+    const db2 = restoreFromFile('dpack', 'test.dpack')
 
     const qp1 = search(db2, {
       term: 'way'
@@ -289,6 +289,51 @@ t.test('dpack persistence', t => {
   })
 })
 
+t.test('should persist data in-memory', t => {
+  t.plan(4)
+  const db = generateTestDBInstance()
+
+  const q1 = search(db, {
+    term: 'way'
+  })
+
+  const q2 = search(db, {
+    term: 'i'
+  })
+
+  // Persist database in-memory
+  const binDB = exportInstance(db, 'binary')
+  const jsonDB = exportInstance(db, 'json')
+  const dpackDB = exportInstance(db, 'dpack')
+
+  // Load database from in-memory
+  const binDB2 = importInstance(binDB, 'binary')
+  const jsonDB2 = importInstance(jsonDB, 'json')
+  const dpackDB2 = importInstance(dpackDB, 'dpack')
+
+  const qp1 = search(binDB2, {
+    term: 'way'
+  })
+
+  const qp2 = search(jsonDB2, {
+    term: 'i'
+  })
+
+  const qp3 = search(dpackDB2, {
+    term: 'way'
+  })
+
+  const qp4 = search(dpackDB2, {
+    term: 'i'
+  })
+
+  // Queries on the loaded database should match the original database
+  t.same(q1.hits, qp1.hits)
+  t.same(q2.hits, qp2.hits)
+  t.same(q1.hits, qp3.hits)
+  t.same(q2.hits, qp4.hits)
+})
+
 t.test('errors', t => {
   t.plan(2)
 
@@ -298,22 +343,22 @@ t.test('errors', t => {
     const db = generateTestDBInstance()
     try {
       // @ts-expect-error - 'unsupported' is not a supported format
-      persist(db, 'unsupported')
+      persistToFile(db, 'unsupported')
     } catch ({ message }) {
       t.match(message, 'Unsupported serialization format: unsupported')
     }
   })
 
-  t.test('should throw an error when trying to restore a database from an unsupported format', t => {
+  t.test('should throw an error when trying to restoreFromFile a database from an unsupported format', t => {
     t.plan(1)
 
     const format = 'unsupported'
 
     const db = generateTestDBInstance()
-    const path = persist(db, 'binary', 'supported')
+    const path = persistToFile(db, 'binary', 'supported')
     try {
       // @ts-expect-error - 'unsupported' is not a supported format
-      restore(format, path)
+      restoreFromFile(format, path)
     } catch ({ message }) {
       t.match(message, UNSUPPORTED_FORMAT(format))
       rmSync(path)
