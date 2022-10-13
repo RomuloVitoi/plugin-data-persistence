@@ -1,7 +1,7 @@
 import type { PersistenceFormat } from '../common/types'
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
-import { Lyra, PropertiesSchema } from '@nearform/lyra'
+import { Lyra, PropertiesSchema } from '@lyrasearch/lyra'
 import { getDefaultFileName, persist as persistDB, restore as restoreDB } from '../common/utils'
 
 function getDefaultOutputDir (format: PersistenceFormat): string {

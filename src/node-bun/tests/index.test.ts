@@ -1,6 +1,6 @@
 import { rmSync } from 'fs'
 import t from 'tap'
-import { create, insert, Lyra, search } from '@nearform/lyra'
+import { create, insert, Lyra, search } from '@lyrasearch/lyra'
 import { restoreFromFile, persistToFile, importInstance, exportInstance } from '../../node-bun'
 import { UNSUPPORTED_FORMAT } from '../../common/errors'
 

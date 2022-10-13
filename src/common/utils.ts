@@ -1,6 +1,6 @@
-import type { PropertiesSchema, Lyra } from '@nearform/lyra'
+import type { PropertiesSchema, Lyra } from '@lyrasearch/lyra'
 import type { PersistenceFormat, AvailableRuntimes } from './types'
-import { save, create } from '@nearform/lyra'
+import { save, create } from '@lyrasearch/lyra'
 // @ts-expect-error dpack does not expose types
 import * as dpack from 'dpack'
 import { encode, decode } from '@msgpack/msgpack'
