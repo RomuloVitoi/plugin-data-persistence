@@ -30,7 +30,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@msgpack/msgpack": "^2.7.2",
-    "@nearform/lyra": "^0.0.4",
+    "@lyrasearch/lyra": "^0.2.6",
     "dpack": "^0.6.22"
   },
   "devDependencies": {

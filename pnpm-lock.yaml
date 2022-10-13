@@ -1,8 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@lyrasearch/lyra': ^0.2.6
   '@msgpack/msgpack': ^2.7.2
-  '@nearform/lyra': ^0.0.4
   '@types/node': ^18.6.4
   '@types/tap': ^15.0.7
   '@typescript-eslint/eslint-plugin': ^5.32.0
@@ -17,8 +17,8 @@ specifiers:
   typescript: ^4.7.4
 
 dependencies:
+  '@lyrasearch/lyra': 0.2.6
   '@msgpack/msgpack': 2.7.2
-  '@nearform/lyra': 0.0.4
   dpack: 0.6.22
 
 devDependencies:
@@ -356,13 +356,13 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
+  /@lyrasearch/lyra/0.2.6:
+    resolution: {integrity: sha512-sgqyT2vib0J1CeuqgsLU2wOdhAoVaDUu+5HmRUsLPeVMdFnOLzyf9i4iVlYktPu8XLjqHY/WRP8RBDYF2ILP4A==}
+    dev: false
+
   /@msgpack/msgpack/2.7.2:
     resolution: {integrity: sha512-rYEi46+gIzufyYUAoHDnRzkWGxajpD9vVXFQ3g1vbjrBm6P7MBmm+s/fqPa46sxa+8FOUdEuRQKaugo5a4JWpw==}
     engines: {node: '>= 10'}
-    dev: false
-
-  /@nearform/lyra/0.0.4:
-    resolution: {integrity: sha512-X1Z553Ku+6nBkwW3zZ6aPAFLu6MmOkysUE7WpPAJYuEE5zgDLh2pGLy4NVPeTaIg3iBJvhLX4atz/lrJwEj4rQ==}
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
