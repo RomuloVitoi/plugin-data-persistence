@@ -29,12 +29,12 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@lyrasearch/lyra": "^0.3.1",
     "@msgpack/msgpack": "^2.7.2",
-    "@lyrasearch/lyra": "^0.2.6",
     "dpack": "^0.6.22"
   },
   "devDependencies": {
-    "@types/node": "^18.6.4",
+    "@types/node": "^18.11.9",
     "@types/tap": "^15.0.7",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "auto-changelog": "^2.4.0",

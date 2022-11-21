@@ -80,5 +80,7 @@ export function restore<T extends PropertiesSchema> (format: PersistenceFormat =
   db.docs = deserialized.docs
   db.nodes = deserialized.nodes
   db.schema = deserialized.schema
+  db.frequencies = deserialized.frequencies
+  db.tokenOccurrencies = deserialized.tokenOccurrencies
   return db as unknown as Lyra<T>
 }
