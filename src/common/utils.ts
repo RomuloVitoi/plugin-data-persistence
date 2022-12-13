@@ -77,6 +77,7 @@ export function restore<T extends PropertiesSchema> (format: PersistenceFormat =
   }
 
   db.index = deserialized.index
+  db.defaultLanguage = deserialized.defaultLanguage
   db.docs = deserialized.docs
   db.nodes = deserialized.nodes
   db.schema = deserialized.schema
