@@ -1,6 +1,6 @@
-import type { PropertiesSchema, Lyra } from '@lyrasearch/lyra'
+import { create, load, save } from '@lyrasearch/lyra'
+import { Lyra, PropertiesSchema } from '@lyrasearch/lyra/dist/types'
 import type { PersistenceFormat, AvailableRuntimes } from './types'
-import { save, create } from '@lyrasearch/lyra'
 // @ts-expect-error dpack does not expose types
 import * as dpack from 'dpack'
 import { encode, decode } from '@msgpack/msgpack'
@@ -30,8 +30,8 @@ export function getDefaultFileName (format: PersistenceFormat, runtime: Availabl
   return `${dbName}.${extension}`
 }
 
-export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary'): string | Buffer {
-  const dbExport = save(db)
+export async function persist<T extends PropertiesSchema> (db: Lyra<T>, format: PersistenceFormat = 'binary'): Promise<string | Buffer> {
+  const dbExport = await save(db)
   let serialized: string | Buffer
 
   switch (format) {
@@ -53,8 +53,9 @@ export function persist<T extends PropertiesSchema> (db: Lyra<T>, format: Persis
   return serialized
 }
 
-export function restore<T extends PropertiesSchema> (format: PersistenceFormat = 'binary', data: string | Buffer): Lyra<T> {
-  const db = create({
+export async function restore<T extends PropertiesSchema> (format: PersistenceFormat = 'binary', data: string | Buffer): Promise<Lyra<T>> {
+  const db = await create({
+    edge: true,
     schema: {
       __placeholder: 'string'
     }
@@ -76,12 +77,7 @@ export function restore<T extends PropertiesSchema> (format: PersistenceFormat =
       throw new Error(UNSUPPORTED_FORMAT(format))
   }
 
-  db.index = deserialized.index
-  db.defaultLanguage = deserialized.defaultLanguage
-  db.docs = deserialized.docs
-  db.nodes = deserialized.nodes
-  db.schema = deserialized.schema
-  db.frequencies = deserialized.frequencies
-  db.tokenOccurrencies = deserialized.tokenOccurrencies
+  await load(db, deserialized)
+
   return db as unknown as Lyra<T>
 }

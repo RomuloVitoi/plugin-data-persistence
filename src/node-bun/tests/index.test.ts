@@ -1,33 +1,34 @@
 import { rmSync } from 'fs'
 import t from 'tap'
-import { create, insert, Lyra, search } from '@lyrasearch/lyra'
+import { create, insert, search } from '@lyrasearch/lyra'
+import { Lyra } from '@lyrasearch/lyra/dist/types'
 import { restoreFromFile, persistToFile, importInstance, exportInstance } from '../../node-bun'
 import { UNSUPPORTED_FORMAT } from '../../common/errors'
 
-function generateTestDBInstance (): Lyra<any> {
-  const db = create({
+async function generateTestDBInstance (): Promise<Lyra<any>> {
+  const db = await create({
     schema: {
       quote: 'string',
       author: 'string'
     }
   })
 
-  insert(db, {
+  await insert(db, {
     quote: 'I am a great programmer',
     author: 'Bill Gates'
   })
 
-  insert(db, {
+  await insert(db, {
     quote: 'Be yourself; everyone else is already taken.',
     author: 'Oscar Wilde'
   })
 
-  insert(db, {
+  await insert(db, {
     quote: 'I have not failed. I\'ve just found 10,000 ways that won\'t work.',
     author: 'Thomas A. Edison'
   })
 
-  insert(db, {
+  await insert(db, {
     quote: 'The only way to do great work is to love what you do.',
     author: 'Steve Jobs'
   })
@@ -38,29 +39,29 @@ function generateTestDBInstance (): Lyra<any> {
 t.test('binary persistence', t => {
   t.plan(3)
 
-  t.test('should generate a persistence file on the disk with random name', t => {
+  t.test('should generate a persistence file on the disk with random name', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in binary format
-    const path = persistToFile(db, 'binary')
+    const path = await persistToFile(db, 'binary')
 
     // Load database from disk in binary format
-    const db2 = restoreFromFile('binary')
+    const db2 = await restoreFromFile('binary')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -72,29 +73,29 @@ t.test('binary persistence', t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name', t => {
+  t.test('should generate a persistence file on the disk with a given name', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in binary format
-    const path = persistToFile(db, 'binary', 'test.dpack')
+    const path = await persistToFile(db, 'binary', 'test.dpack')
 
     // Load database from disk in binary format
-    const db2 = restoreFromFile('binary', 'test.dpack')
+    const db2 = await restoreFromFile('binary', 'test.dpack')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -106,32 +107,32 @@ t.test('binary persistence', t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk using LYRA_DB_NAME env', t => {
+  t.test('should generate a persistence file on the disk using LYRA_DB_NAME env', async t => {
     t.plan(3)
     const currentLyraDBNameValue = process.env.LYRA_DB_NAME
     process.env.LYRA_DB_NAME = 'example_db_dump'
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in binary format
-    const path = persistToFile(db, 'binary')
+    const path = await persistToFile(db, 'binary')
     t.match(path, process.env.LYRA_DB_NAME)
 
     // Load database from disk in binary format
-    const db2 = restoreFromFile('binary', path)
+    const db2 = await restoreFromFile('binary', path)
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -148,29 +149,29 @@ t.test('binary persistence', t => {
 t.test('json persistence', t => {
   t.plan(2)
 
-  t.test('should generate a persistence file on the disk with random name and json format', t => {
+  t.test('should generate a persistence file on the disk with random name and json format', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in json format
-    const path = persistToFile(db, 'json')
+    const path = await persistToFile(db, 'json')
 
     // Load database from disk in json format
-    const db2 = restoreFromFile('json')
+    const db2 = await restoreFromFile('json')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -182,29 +183,29 @@ t.test('json persistence', t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name and json format', t => {
+  t.test('should generate a persistence file on the disk with a given name and json format', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in json format
-    const path = persistToFile(db, 'json', 'test.json')
+    const path = await persistToFile(db, 'json', 'test.json')
 
     // Load database from disk in json format
-    const db2 = restoreFromFile('json', 'test.json')
+    const db2 = await restoreFromFile('json', 'test.json')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -220,29 +221,29 @@ t.test('json persistence', t => {
 t.test('dpack persistence', t => {
   t.plan(2)
 
-  t.test('should generate a persistence file on the disk with random name and dpack format', t => {
+  t.test('should generate a persistence file on the disk with random name and dpack format', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in dpack format
-    const path = persistToFile(db, 'dpack')
+    const path = await persistToFile(db, 'dpack')
 
     // Load database from disk in dpack format
-    const db2 = restoreFromFile('dpack')
+    const db2 = await restoreFromFile('dpack')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -254,29 +255,29 @@ t.test('dpack persistence', t => {
     rmSync(path)
   })
 
-  t.test('should generate a persistence file on the disk with a given name and dpack format', t => {
+  t.test('should generate a persistence file on the disk with a given name and dpack format', async t => {
     t.plan(2)
 
-    const db = generateTestDBInstance()
-    const q1 = search(db, {
+    const db = await generateTestDBInstance()
+    const q1 = await search(db, {
       term: 'way'
     })
 
-    const q2 = search(db, {
+    const q2 = await search(db, {
       term: 'i'
     })
 
     // Persist database on disk in json format
-    const path = persistToFile(db, 'dpack', 'test.dpack')
+    const path = await persistToFile(db, 'dpack', 'test.dpack')
 
     // Load database from disk in json format
-    const db2 = restoreFromFile('dpack', 'test.dpack')
+    const db2 = await restoreFromFile('dpack', 'test.dpack')
 
-    const qp1 = search(db2, {
+    const qp1 = await search(db2, {
       term: 'way'
     })
 
-    const qp2 = search(db2, {
+    const qp2 = await search(db2, {
       term: 'i'
     })
 
@@ -289,41 +290,41 @@ t.test('dpack persistence', t => {
   })
 })
 
-t.test('should persist data in-memory', t => {
+t.test('should persist data in-memory', async t => {
   t.plan(4)
-  const db = generateTestDBInstance()
+  const db = await generateTestDBInstance()
 
-  const q1 = search(db, {
+  const q1 = await search(db, {
     term: 'way'
   })
 
-  const q2 = search(db, {
+  const q2 = await search(db, {
     term: 'i'
   })
 
   // Persist database in-memory
-  const binDB = exportInstance(db, 'binary')
-  const jsonDB = exportInstance(db, 'json')
-  const dpackDB = exportInstance(db, 'dpack')
+  const binDB = await exportInstance(db, 'binary')
+  const jsonDB = await exportInstance(db, 'json')
+  const dpackDB = await exportInstance(db, 'dpack')
 
   // Load database from in-memory
-  const binDB2 = importInstance(binDB, 'binary')
-  const jsonDB2 = importInstance(jsonDB, 'json')
-  const dpackDB2 = importInstance(dpackDB, 'dpack')
+  const binDB2 = await importInstance(binDB, 'binary')
+  const jsonDB2 = await importInstance(jsonDB, 'json')
+  const dpackDB2 = await importInstance(dpackDB, 'dpack')
 
-  const qp1 = search(binDB2, {
+  const qp1 = await search(binDB2, {
     term: 'way'
   })
 
-  const qp2 = search(jsonDB2, {
+  const qp2 = await search(jsonDB2, {
     term: 'i'
   })
 
-  const qp3 = search(dpackDB2, {
+  const qp3 = await search(dpackDB2, {
     term: 'way'
   })
 
-  const qp4 = search(dpackDB2, {
+  const qp4 = await search(dpackDB2, {
     term: 'i'
   })
 
@@ -337,28 +338,28 @@ t.test('should persist data in-memory', t => {
 t.test('errors', t => {
   t.plan(2)
 
-  t.test('should throw an error when trying to persist a database in an unsupported format', t => {
+  t.test('should throw an error when trying to persist a database in an unsupported format', async t => {
     t.plan(1)
 
-    const db = generateTestDBInstance()
+    const db = await generateTestDBInstance()
     try {
       // @ts-expect-error - 'unsupported' is not a supported format
-      persistToFile(db, 'unsupported')
+      await persistToFile(db, 'unsupported')
     } catch ({ message }) {
       t.match(message, 'Unsupported serialization format: unsupported')
     }
   })
 
-  t.test('should throw an error when trying to restoreFromFile a database from an unsupported format', t => {
+  t.test('should throw an error when trying to restoreFromFile a database from an unsupported format', async t => {
     t.plan(1)
 
     const format = 'unsupported'
 
-    const db = generateTestDBInstance()
-    const path = persistToFile(db, 'binary', 'supported')
+    const db = await generateTestDBInstance()
+    const path = await persistToFile(db, 'binary', 'supported')
     try {
       // @ts-expect-error - 'unsupported' is not a supported format
-      restoreFromFile(format, path)
+      await restoreFromFile(format, path)
     } catch ({ message }) {
       t.match(message, UNSUPPORTED_FORMAT(format))
       rmSync(path)

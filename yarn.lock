@@ -388,10 +388,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@lyrasearch/lyra@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@lyrasearch/lyra/-/lyra-0.3.1.tgz#9c07a03540c4ed43b503dfd043d689f3869fb28b"
-  integrity sha512-c0k8R026nfXu/FhA9xgh7jo/+HM4I7XCn5J+us32mQEmqNBmGpD0CEyJ8PiJxmsDapyeYwpMNQgT2lNmnIL86w==
+"@lyrasearch/lyra@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@lyrasearch/lyra/-/lyra-0.4.1.tgz#759474b55eaad1294cc3f4952222a9aabba9a8d4"
+  integrity sha512-ZGy+fD01PB/hmM0xvcSg/C/NQFmen04fLRNtSYPRpYvQelC6jdnhYNIX46qpfSBdxN0I1D0DcR1fmkw7aDLHoA==
 
 "@msgpack/msgpack@^2.7.2":
   version "2.8.0"
